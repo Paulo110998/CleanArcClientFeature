@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.1" />
+    <PackageReference Include="NHibernate" Version="5.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CleanArcClientFeature.Application\CleanArcClientFeature.Application.csproj" />
+    <ProjectReference Include="..\CleanArcClientFeature.Domain\CleanArcClientFeature.Domain.csproj" />
+    <ProjectReference Include="..\CleanArcClientFeature.Infrastructure\CleanArcClientFeature.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
