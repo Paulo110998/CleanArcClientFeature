@@ -8,50 +8,50 @@ using MediatR;
 
 namespace CleanArcClientFeature.Application.Services;
 
-public class ClientService : IClientService
+public class ClienteService : IClienteService
 {
     private readonly IMapper _mapper;
     private readonly IMediator _mediator;
 
-    public ClientService(IMapper mapper, IMediator mediator)
+    public ClienteService(IMapper mapper, IMediator mediator)
     {
         _mapper = mapper;
         _mediator = mediator;
     }
 
-    public async Task<IEnumerable<ClientDTO>> GetClients()
+    public async Task<IEnumerable<ClienteDTO>> BuscarClientes()
     {
         var query = new ObtemClientesQuery();
         var clients = await _mediator.Send(query);
-        return _mapper.Map<IEnumerable<ClientDTO>>(clients);
+        return _mapper.Map<IEnumerable<ClienteDTO>>(clients);
     }
 
-    public async Task<ClientDTO> GetClientById(int? id)
+    public async Task<ClienteDTO> BuscarClienteById(int? id)
     {
         if (id == null) return null;
 
         var query = new ObtemClientePorIdQuery(id.Value);
         var client = await _mediator.Send(query);
-        return _mapper.Map<ClientDTO>(client);
+        return _mapper.Map<ClienteDTO>(client);
     }
 
-    public async Task Add(ClientDTO clientDTO)
+    public async Task Adicionar(ClienteDTO clientDTO)
     {
         var command = _mapper.Map<CriaClienteCommand>(clientDTO);
         await _mediator.Send(command);
     }
 
-    public async Task Update(ClientDTO clientDTO)
+    public async Task Atualizar(ClienteDTO clientDTO)
     {
-        var command = _mapper.Map<UpdateClienteCommand>(clientDTO);
+        var command = _mapper.Map<AtualizarClienteCommand>(clientDTO);
         await _mediator.Send(command);
     }
 
-    public async Task Remove(int? id)
+    public async Task Remover(int? id)
     {
         if (id == null) return;
 
-        var command = new RemoveClienteCommand(id.Value);
+        var command = new RemoverClienteCommand(id.Value);
         await _mediator.Send(command);
     }
 }

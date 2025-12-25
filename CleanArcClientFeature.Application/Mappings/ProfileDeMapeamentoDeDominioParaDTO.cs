@@ -6,23 +6,23 @@ using CleanArcClientFeature.Domain.ValueObjects;
 
 namespace CleanArcClientFeature.Application.Mappings;
 
-public class DomainToDTOMappingProfile : Profile
+public class ProfileDeMapeamentoDeDominioParaDTO : Profile
 {
-    public DomainToDTOMappingProfile()
+    public ProfileDeMapeamentoDeDominioParaDTO()
     {
         // Mapeamento de Client para ClientDTO
-        CreateMap<Client, ClientDTO>()
+        CreateMap<Cliente, ClienteDTO>()
             .ForMember(dest => dest.Cnpj, opt => opt.MapFrom(src => src.Cnpj.Value))
             .ReverseMap()
             .ForMember(dest => dest.Cnpj, opt => opt.MapFrom(src => new Cnpj(src.Cnpj)));
 
         // Mapeamento para Commands
-        CreateMap<Client, CriaClienteCommand>()
+        CreateMap<Cliente, CriaClienteCommand>()
             .ForMember(dest => dest.Cnpj, opt => opt.MapFrom(src => src.Cnpj.Value))
             .ReverseMap()
             .ForMember(dest => dest.Cnpj, opt => opt.MapFrom(src => new Cnpj(src.Cnpj)));
 
-        CreateMap<Client, UpdateClienteCommand>()
+        CreateMap<Cliente, AtualizarClienteCommand>()
             .ForMember(dest => dest.Cnpj, opt => opt.MapFrom(src => src.Cnpj.Value))
             .ReverseMap()
             .ForMember(dest => dest.Cnpj, opt => opt.MapFrom(src => new Cnpj(src.Cnpj)));

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CleanArcClientFeature.Application.Clients.Commands;
 
-public class UpdateClienteCommand : ClientCommand
+public class AtualizarClienteCommand : ClientCommand
 {
     public int Id { get; set; }
 }

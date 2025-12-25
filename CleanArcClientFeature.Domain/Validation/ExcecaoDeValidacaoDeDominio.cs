@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace CleanArcClientFeature.Domain.Validation;
 
-public class DomainExceptionValidation : Exception
+public class ExcecaoDeValidacaoDeDominio : Exception
 {
-    public DomainExceptionValidation(string error) : base(error)
+    public ExcecaoDeValidacaoDeDominio(string error) : base(error)
     {
         
     }
 
-    public static void When(bool hasError, string error)
+    public static void ExcecaoDeErro(bool hasError, string error)
     {
         if(hasError)
         {
-            throw new DomainExceptionValidation(error);
+            throw new ExcecaoDeValidacaoDeDominio(error);
         }
     }
 }

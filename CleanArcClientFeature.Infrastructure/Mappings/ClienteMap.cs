@@ -1,13 +1,14 @@
 ﻿using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
 using CleanArcClientFeature.Domain.Entities;
+using CleanArcClientFeature.Infrastructure.Types;
 
 
 namespace CleanArcClientFeature.Infrastructure.Mappings;  
 
-public class ClientMap : ClassMapping<Client>
+public class ClienteMap : ClassMapping<Cliente>
 {
-    public ClientMap()
+    public ClienteMap()
     {
         Table("Clients");
         Lazy(false);
@@ -27,7 +28,7 @@ public class ClientMap : ClassMapping<Client>
         Property(x => x.Cnpj, m =>
         {
             m.Column("Cnpj");
-            m.Type<CnpjType>();
+            m.Type<CnpjTipo>();
             m.Length(14);
             m.NotNullable(true);
         });

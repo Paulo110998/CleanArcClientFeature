@@ -4,7 +4,10 @@ using NHibernate.SqlTypes;
 using NHibernate.UserTypes;
 using System.Data.Common;
 
-public class CnpjType : IUserType
+
+namespace CleanArcClientFeature.Infrastructure.Types;
+
+public class CnpjTipo : IUserType
 {
     public SqlType[] SqlTypes => new SqlType[] { new StringSqlType(14) };
 
@@ -23,7 +26,7 @@ public class CnpjType : IUserType
     {
         if (value == null) return null;
         var cnpj = (Cnpj)value;
-        return new Cnpj(cnpj.Value); // Usa o construtor protegido
+        return new Cnpj(cnpj.Value);
     }
 
     public bool IsMutable => false;
@@ -35,8 +38,8 @@ public class CnpjType : IUserType
             return null;
 
         var strValue = (string)value;
-        // Usa o método de fábrica estático para criar o Cnpj
-        return string.IsNullOrEmpty(strValue) ? null : Cnpj.Create(strValue);
+        // CORREÇÃO: Usar o método de fábrica público
+        return Cnpj.Criar(strValue);
     }
 
     public void NullSafeSet(DbCommand cmd, object value, int index, ISessionImplementor session)

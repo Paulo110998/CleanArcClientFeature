@@ -14,50 +14,65 @@ public class ClienteRepository : IClienteRepository
         _session = session;
     }
 
-    // CREATE
-    public async Task<Client> Create(Client client)
+    // CREATE - Versão simplificada
+    public async Task<Cliente> Criar(Cliente client)
     {
-        using (var transaction = _session.BeginTransaction())
+        // O NHibernate gerencia a transação automaticamente em alguns casos,
+        // mas vamos manter explícito para clareza
+        using var transaction = _session.BeginTransaction();
+        try
         {
-            await _session.SaveAsync(client); 
+            await _session.SaveAsync(client); // erro aqui
             await transaction.CommitAsync();
+            return client;
         }
-        return client;
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
     }
 
-    public async Task<Client?> GetClientIdAsync(int? id)
+    public async Task<Cliente?> BuscarClienteIdAsync(int? id)
     {
-        if (id == null)
-            return null;
-
-        return await _session.GetAsync<Client>(id.Value);
+        if (id == null) return null;
+        return await _session.GetAsync<Cliente>(id.Value);
     }
 
-    // GET
-    public async Task<IEnumerable<Client>> GetClientsAsync()
+    public async Task<IEnumerable<Cliente>> BuscarClientesAsync()
     {
-        return await _session.Query<Client>().ToListAsync();
+        return await _session.Query<Cliente>().ToListAsync();
     }
 
-    // DELETE
-    public async Task<Client> Remove(Client client)
+    public async Task<Cliente> Remover(Cliente client)
     {
-        using (var transaction = _session.BeginTransaction())
+        using var transaction = _session.BeginTransaction();
+        try
         {
             await _session.DeleteAsync(client);
             await transaction.CommitAsync();
+            return client;
         }
-        return client;
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
     }
 
-    // UPDATE
-    public async Task<Client> Update(Client client)
+    public async Task<Cliente> Atualizar(Cliente client)
     {
-        using (var transaction = _session.BeginTransaction())
+        using var transaction = _session.BeginTransaction();
+        try
         {
             await _session.UpdateAsync(client);
             await transaction.CommitAsync();
+            return client;
         }
-        return client;
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
     }
 }

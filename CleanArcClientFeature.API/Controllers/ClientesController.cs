@@ -6,35 +6,35 @@ namespace CleanArcClientFeature.API.Controllers;
 
 [ApiController]
 [Route("api/clients")]
-public class ClientsController : ControllerBase
+public class ClientesController : ControllerBase
 {
-    private readonly IClientService _clientService;
+    private readonly IClienteService _clienteService;
     private readonly IWebHostEnvironment _enviroment;
 
-    public ClientsController(IClientService clientService, IWebHostEnvironment enviroment)
+    public ClientesController(IClienteService clientService, IWebHostEnvironment enviroment)
     {
-        _clientService = clientService;
+        _clienteService = clientService;
         _enviroment = enviroment;
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateClient([FromBody] ClientDTO clientDTO)
+    public async Task<IActionResult> CriarClient([FromBody] ClienteDTO clientDTO)
     {
-        await _clientService.Add(clientDTO);
+        await _clienteService.Adicionar(clientDTO);
         return Ok("Cliente criado com sucesso.");  
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllClients()
+    public async Task<IActionResult> BuscarClients()
     {
-        var clients = await _clientService.GetClients();
+        var clients = await _clienteService.BuscarClientes();
         return Ok(clients);
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetClientById(int id)
+    public async Task<IActionResult> BuscarClienteId(int id)
     {
-        var client = await _clientService.GetClientById(id);
+        var client = await _clienteService.BuscarClienteById(id);
         if (client == null)
         {
             return NotFound("Cliente não encontrado.");
@@ -44,28 +44,28 @@ public class ClientsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateClient(int id, [FromBody] ClientDTO clientDTO)
+    public async Task<IActionResult> AtualizarCliente(int id, [FromBody] ClienteDTO clientDTO)
     {
-        var existingClient = await _clientService.GetClientById(id);
+        var existingClient = await _clienteService.BuscarClienteById(id);
         if (existingClient == null)
         {
             return NotFound("Cliente não encontrado.");
         }
-        await _clientService.Update(clientDTO);
+        await _clienteService.Atualizar(clientDTO);
         return Ok("Cliente atualizado com sucesso.");
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteClient(int id)
+    public async Task<IActionResult> DeletarCliente(int id)
     {
-        var existingClient = await _clientService.GetClientById(id);
+        var existingClient = await _clienteService.BuscarClienteById(id);
         
         if (existingClient == null)
         {
             return NotFound("Cliente não encontrado.");
         }
         
-        await _clientService.Remove(id);
+        await _clienteService.Remover(id);
         return Ok("Cliente removido com sucesso.");
     }
 

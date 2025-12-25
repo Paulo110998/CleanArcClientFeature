@@ -1,21 +1,16 @@
 ﻿using CleanArcClientFeature.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CleanArcClientFeature.Infrastructure.Interfaces;
 
 public interface IClienteRepository
 {
-    Task<IEnumerable<Client>> GetClientsAsync();
+    Task<IEnumerable<Cliente>> BuscarClientesAsync();
 
-    Task<Client> GetClientIdAsync(int? id);
+    Task<Cliente> BuscarClienteIdAsync(int? id);
 
-    Task<Client> Create(Client client);
+    Task<Cliente> Criar(Cliente client);
 
-    Task<Client> Update(Client client);
+    Task<Cliente> Atualizar(Cliente client);
 
-    Task<Client> Remove(Client client);
+    Task<Cliente> Remover(Cliente client);
 }

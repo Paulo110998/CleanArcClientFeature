@@ -20,7 +20,7 @@ public class Cnpj
     }
 
     // Método estático para criar com validação completa
-    public static Cnpj Create(string value)
+    public static Cnpj Criar(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
             throw new ArgumentException("CNPJ inválido");

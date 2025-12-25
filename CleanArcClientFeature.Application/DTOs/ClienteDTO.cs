@@ -2,7 +2,7 @@
 
 namespace CleanArcClientFeature.Application.DTOs;
 
-public class ClientDTO
+public class ClienteDTO
 {
     public int Id { get; set; }
 

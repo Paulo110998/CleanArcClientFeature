@@ -7,25 +7,25 @@ using MediatR;
 
 namespace CleanArcClientFeature.Application.Clients.Handlers;
 
-public class CriaClienteCommandHandler : IRequestHandler<CriaClienteCommand, Client>
+public class CriaClienteCommandHandler : IRequestHandler<CriaClienteCommand, Cliente>
 {
     private readonly IClienteRepository _clienteRepository;
-    private readonly IMapper _mapper;
+    private readonly IMapper _mapeador;
 
-    public CriaClienteCommandHandler(IClienteRepository clienteRepository, IMapper mapper)
+    public CriaClienteCommandHandler(IClienteRepository clienteRepository, IMapper mapeador)
     {
         _clienteRepository = clienteRepository;
-        _mapper = mapper;
+        _mapeador = mapeador;
     }
 
-    public async Task<Client> Handle(CriaClienteCommand request, CancellationToken cancellationToken)
+    public async Task<Cliente> Handle(CriaClienteCommand requisicao, CancellationToken cancellationToken)
     {
         // Cria o Value Object Cnpj
-        var cnpj = new Cnpj(request.Cnpj);
+        var cnpj = new Cnpj(requisicao.Cnpj);
 
         // Cria a entidade Client
-        var client = new Client(request.NomeFantasia, cnpj, request.Ativo);
+        var cliente = new Cliente(requisicao.NomeFantasia, cnpj, requisicao.Ativo);
 
-        return await _clienteRepository.Create(client);
+        return await _clienteRepository.Criar(cliente);
     }
 }

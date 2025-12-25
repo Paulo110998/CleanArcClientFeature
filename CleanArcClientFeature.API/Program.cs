@@ -1,6 +1,7 @@
-using CleanArcClientFeature.Ioc;
+Ôªøusing CleanArcClientFeature.Ioc;
 using NHibernate;
-using System.Collections;
+using System.Data.SQLite;
+using NHibernateSession = NHibernate.ISession;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +9,6 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddInfrastructure(builder.Configuration);
 
-// Adiciona Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -25,114 +25,116 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
-app.MapGet("/debug-assemblies", () =>
-{
-    var assemblies = AppDomain.CurrentDomain.GetAssemblies()
-        .Where(a => a.FullName != null && a.FullName.Contains("CleanArcClientFeature"))
-        .Select(a => new
-        {
-            Name = a.GetName().Name,
-            FullName = a.FullName,
-            Location = a.Location,
-            TypesCount = a.GetTypes().Length
-        })
-        .ToList();
+//// Endpoint para verificar o banco de dados
+//app.MapGet("/debug-db-status", (NHibernateSession session, IServiceProvider services) =>
+//{
+//    try
+//    {
+//        var factory = services.GetRequiredService<ISessionFactory>();
 
-    return Results.Ok(assemblies);
-});
+//        // Verificar tabelas via SQL puro
+//        var tables = session.CreateSQLQuery(
+//            "SELECT name FROM sqlite_master WHERE type='table'")
+//            .List<string>();
 
-app.MapGet("/debug-nhibernate-internal", (IServiceProvider services) =>
-{
-    try
-    {
-        var factory = services.GetRequiredService<ISessionFactory>();
-        var metadata = factory.GetClassMetadata(typeof(CleanArcClientFeature.Domain.Entities.Client));
+//        var clientsCount = tables.Contains("Clients")
+//            ? session.CreateSQLQuery("SELECT COUNT(*) FROM Clients").UniqueResult<long>()
+//            : 0;
 
-        return Results.Ok(new
-        {
-            HasMetadata = metadata != null,
-            MetadataType = metadata?.GetType().Name,
-            EntityName = metadata?.EntityName,
-            IdentifierPropertyName = metadata?.IdentifierPropertyName,
-            PropertyNames = metadata?.PropertyNames
-        });
-    }
-    catch (Exception ex)
-    {
-        return Results.Problem($"Erro: {ex.Message}");
-    }
-});
+//        // Verificar metadados do NHibernate
+//        var metadata = factory.GetClassMetadata(typeof(CleanArcClientFeature.Domain.Entities.Client));
 
-// Endpoint corrigido para debug de mapeamentos
-app.MapGet("/debug-mappings", (IServiceProvider services) =>
-{
-    try
-    {
-        var factory = services.GetRequiredService<ISessionFactory>();
-        var allClassMetadata = factory.GetAllClassMetadata();
+//        return Results.Ok(new
+//        {
+//            DatabaseFile = Path.Combine(AppContext.BaseDirectory, "CleanArcClientFeature.db"),
+//            Tables = tables,
+//            ClientsTableExists = tables.Contains("Clients"),
+//            ClientsCount = clientsCount,
+//            NHibernateMapped = metadata != null,
+//            SessionFactoryType = factory.GetType().Name
+//        });
+//    }
+//    catch (Exception ex)
+//    {
+//        return Results.Problem($"Erro: {ex.Message}");
+//    }
+//});
 
-        var result = new List<object>();
+//// Endpoint para testar inser√ß√£o SQL DIRETA (bypass NHibernate)
+//app.MapPost("/test-sql-insert", () =>
+//{
+//    try
+//    {
+//        var dbPath = Path.Combine(AppContext.BaseDirectory, "CleanArcClientFeature.db");
+//        using var connection = new SQLiteConnection($"Data Source={dbPath};Version=3;");
+//        connection.Open();
 
-        foreach (var entry in allClassMetadata)
-        {
-            var metadata = entry.Value as NHibernate.Persister.Entity.IEntityPersister;
-            if (metadata != null)
-            {
-                result.Add(new
-                {
-                    EntityName = entry.Key,
-                    // SubstituiÁ„o do RootTableName por MappedClass.Name
-                    TableName = metadata.MappedClass?.Name,
-                    Properties = metadata.PropertyNames,
-                    IdPropertyName = metadata.IdentifierPropertyName
-                });
-            }
-        }
+//        using var cmd = new SQLiteCommand(
+//            "INSERT INTO Clients (NomeFantasia, Cnpj, Ativo) VALUES (@nome, @cnpj, @ativo)",
+//            connection);
 
-        return Results.Ok(new
-        {
-            MappedEntities = result.Count,
-            Entities = result
-        });
-    }
-    catch (Exception ex)
-    {
-        return Results.Problem($"Erro: {ex.Message}");
-    }
-});
+//        cmd.Parameters.AddWithValue("@nome", "Teste SQL Direto");
+//        cmd.Parameters.AddWithValue("@cnpj", "12345678901234");
+//        cmd.Parameters.AddWithValue("@ativo", true);
 
-app.MapPost("/test-persist", async (NHibernate.ISession session) =>
-{
-    try
-    {
-        // Testa se o mapeamento est· funcionando
-        var cnpj = new CleanArcClientFeature.Domain.ValueObjects.Cnpj("12345678901234");
-        var client = new CleanArcClientFeature.Domain.Entities.Client("Teste Persist", cnpj, true);
+//        var rowsAffected = cmd.ExecuteNonQuery();
 
-        // Verifica se È uma entidade conhecida
-        var factory = session.SessionFactory;
-        var classMetadata = factory.GetClassMetadata(typeof(CleanArcClientFeature.Domain.Entities.Client));
+//        // Obter o √∫ltimo ID inserido
+//        cmd.CommandText = "SELECT last_insert_rowid()";
+//        var lastId = cmd.ExecuteScalar();
 
-        if (classMetadata == null)
-        {
-            return Results.Problem("? Entidade Client n„o est· mapeada!");
-        }
+//        return Results.Ok(new
+//        {
+//            Success = true,
+//            RowsAffected = rowsAffected,
+//            LastInsertId = lastId,
+//            Message = "Inser√ß√£o SQL direta funcionou!"
+//        });
+//    }
+//    catch (Exception ex)
+//    {
+//        return Results.Problem($"‚ùå Erro SQL direto: {ex.Message}");
+//    }
+//});
 
-        await session.SaveAsync(client);
-        await session.FlushAsync();
+//// Endpoint para limpar e recriar o banco (apenas para testes)
+//app.MapPost("/reset-database", () =>
+//{
+//    try
+//    {
+//        var dbPath = Path.Combine(AppContext.BaseDirectory, "CleanArcClientFeature.db");
 
-        return Results.Ok(new
-        {
-            Success = true,
-            Id = client.Id,
-            EntityName = classMetadata.EntityName,
-            Message = "PersistÍncia funcionando!"
-        });
-    }
-    catch (Exception ex)
-    {
-        return Results.Problem($"? Erro: {ex.Message}\n{ex.GetType().Name}");
-    }
-});
+//        if (File.Exists(dbPath))
+//        {
+//            File.Delete(dbPath);
+//            Console.WriteLine($"üóëÔ∏è  Banco de dados removido: {dbPath}");
+//        }
+
+//        // Recriar conex√£o
+//        using var connection = new SQLiteConnection($"Data Source={dbPath};Version=3;");
+//        connection.Open();
+
+//        using var cmd = new SQLiteCommand(
+//            @"CREATE TABLE Clients (
+//                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+//                NomeFantasia TEXT NOT NULL,
+//                Cnpj TEXT NOT NULL,
+//                Ativo BOOLEAN NOT NULL
+//            )", connection);
+
+//        cmd.ExecuteNonQuery();
+
+//        return Results.Ok(new
+//        {
+//            Success = true,
+//            Message = "Banco de dados resetado com sucesso!",
+//            DatabasePath = dbPath
+//        });
+//    }
+//    catch (Exception ex)
+//    {
+//        return Results.Problem($"‚ùå Erro ao resetar banco: {ex.Message}");
+//    }
+//});
 
 app.Run();

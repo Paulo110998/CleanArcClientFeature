@@ -5,7 +5,7 @@ using MediatR;
 
 namespace CleanArcClientFeature.Application.Clients.Handlers;
 
-public class ObtemClientesQueryHandler : IRequestHandler<ObtemClientesQuery, IEnumerable<Client>>
+public class ObtemClientesQueryHandler : IRequestHandler<ObtemClientesQuery, IEnumerable<Cliente>>
 {
     private readonly IClienteRepository _clienteRepository;
 
@@ -14,8 +14,8 @@ public class ObtemClientesQueryHandler : IRequestHandler<ObtemClientesQuery, IEn
         _clienteRepository = clienteRepository;
     }
 
-    public async Task<IEnumerable<Client>> Handle(ObtemClientesQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Cliente>> Handle(ObtemClientesQuery requisicao, CancellationToken cancellationToken)
     {
-        return await _clienteRepository.GetClientsAsync();
+        return await _clienteRepository.BuscarClientesAsync();
     }
 }
