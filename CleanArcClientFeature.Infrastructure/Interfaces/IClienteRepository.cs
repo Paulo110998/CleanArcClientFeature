@@ -8,9 +8,12 @@ public interface IClienteRepository
 
     Task<Cliente> BuscarClienteIdAsync(int? id);
 
+    Task<Cliente> BuscarClientePorCnpjAsync(string cnpj);
+
     Task<Cliente> Criar(Cliente client);
 
     Task<Cliente> Atualizar(Cliente client);
 
     Task<Cliente> Remover(Cliente client);
+  
 }

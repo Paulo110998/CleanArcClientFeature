@@ -20,8 +20,17 @@ public class ClientesController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CriarClient([FromBody] ClienteDTO clientDTO)
     {
-        await _clienteService.Adicionar(clientDTO);
-        return Ok("Cliente criado com sucesso.");  
+        try
+        {
+            await _clienteService.Adicionar(clientDTO);
+            return Ok("Cliente criado com sucesso.");
+
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
     }
 
     [HttpGet]

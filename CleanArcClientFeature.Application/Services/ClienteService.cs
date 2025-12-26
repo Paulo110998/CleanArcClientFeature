@@ -35,10 +35,20 @@ public class ClienteService : IClienteService
         return _mapper.Map<ClienteDTO>(client);
     }
 
+  
     public async Task Adicionar(ClienteDTO clientDTO)
     {
-        var command = _mapper.Map<CriaClienteCommand>(clientDTO);
-        await _mediator.Send(command);
+        try
+        {
+            var command = _mapper.Map<CriaClienteCommand>(clientDTO);
+            await _mediator.Send(command);
+        }
+        catch (Exception ex)
+        {
+            // A exceção lançada no Handle será capturada aqui
+            // Você pode logar se quiser e depois relançar para mostrar ao usuário
+            throw new Exception($"Erro ao adicionar cliente: {ex.Message}");
+        }
     }
 
     public async Task Atualizar(ClienteDTO clientDTO)

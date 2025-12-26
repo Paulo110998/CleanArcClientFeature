@@ -7,6 +7,7 @@ namespace CleanArcClientFeature.Infrastructure.Repositories;
 
 public class ClienteRepository : IClienteRepository
 {
+    private readonly List<Cliente> _clientes = new();
     private readonly ISession _session;
 
     public ClienteRepository(ISession session)
@@ -75,4 +76,18 @@ public class ClienteRepository : IClienteRepository
             throw;
         }
     }
+
+    public async Task<Cliente> BuscarClientePorCnpjAsync(string cnpj)
+    {
+        // Normaliza o CNPJ antes de buscar
+        string cnpjNormalizado = new string(cnpj?.Where(char.IsDigit).ToArray());
+
+        // Consulta alternativa que o NHibernate consegue processar
+        var clientes = await _session.Query<Cliente>().ToListAsync();
+
+        return clientes.FirstOrDefault(c =>
+            new string(c.Cnpj.Value?.Where(char.IsDigit).ToArray()) == cnpjNormalizado);
+    }
+
+  
 }
