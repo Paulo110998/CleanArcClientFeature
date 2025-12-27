@@ -3,7 +3,6 @@ using CleanArcClientFeature.Application.Clients.Commands;
 using CleanArcClientFeature.Application.Clients.Queries;
 using CleanArcClientFeature.Application.DTOs;
 using CleanArcClientFeature.Application.Interfaces;
-using CleanArcClientFeature.Domain.Entities;
 using MediatR;
 
 namespace CleanArcClientFeature.Application.Services;
@@ -46,7 +45,6 @@ public class ClienteService : IClienteService
         catch (Exception ex)
         {
             // A exceção lançada no Handle será capturada aqui
-            // Você pode logar se quiser e depois relançar para mostrar ao usuário
             throw new Exception($"Erro ao adicionar cliente: {ex.Message}");
         }
     }

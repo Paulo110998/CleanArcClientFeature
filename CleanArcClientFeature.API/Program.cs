@@ -1,7 +1,5 @@
 ﻿using CleanArcClientFeature.Ioc;
-using NHibernate;
-using System.Data.SQLite;
-using NHibernateSession = NHibernate.ISession;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

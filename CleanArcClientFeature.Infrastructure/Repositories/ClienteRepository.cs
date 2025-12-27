@@ -15,15 +15,13 @@ public class ClienteRepository : IClienteRepository
         _session = session;
     }
 
-    // CREATE - Versão simplificada
     public async Task<Cliente> Criar(Cliente client)
     {
-        // O NHibernate gerencia a transação automaticamente em alguns casos,
-        // mas vamos manter explícito para clareza
+        // O NHibernate gerencia a transação automaticamente 
         using var transaction = _session.BeginTransaction();
         try
         {
-            await _session.SaveAsync(client); // erro aqui
+            await _session.SaveAsync(client); 
             await transaction.CommitAsync();
             return client;
         }

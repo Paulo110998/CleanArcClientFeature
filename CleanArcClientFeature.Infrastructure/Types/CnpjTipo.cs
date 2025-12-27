@@ -38,7 +38,7 @@ public class CnpjTipo : IUserType
             return null;
 
         var strValue = (string)value;
-        // CORREÇÃO: Usar o método de fábrica público
+        
         return Cnpj.Criar(strValue);
     }
 

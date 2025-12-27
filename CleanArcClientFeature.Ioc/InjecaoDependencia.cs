@@ -1,5 +1,4 @@
-﻿// CleanArcClientFeature.Ioc/InjecaoDependencia.cs
-using CleanArcClientFeature.Application.Interfaces;
+﻿using CleanArcClientFeature.Application.Interfaces;
 using CleanArcClientFeature.Application.Mappings;
 using CleanArcClientFeature.Application.Services;
 using CleanArcClientFeature.Infrastructure.Config;
@@ -111,7 +110,7 @@ public static class InjecaoDependencia
         return services;
     }
 
-    // Classe auxiliar para registro do tipo customizado (se ainda necessário)
+    // Classe auxiliar para registro do tipo customizado 
     private class RegistroTipoCnpj : NHibernate.Mapping.IAuxiliaryDatabaseObject
     {
         public void AddDialectScope(string dialectName) { }

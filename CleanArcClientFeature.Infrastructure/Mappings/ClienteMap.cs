@@ -24,7 +24,6 @@ public class ClienteMap : ClassMapping<Cliente>
             m.NotNullable(true);
         });
 
-        // **IMPORTANTE: Verifique se o CnpjType está acessível**
         Property(x => x.Cnpj, m =>
         {
             m.Column("Cnpj");
